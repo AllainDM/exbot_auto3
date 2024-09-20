@@ -1,0 +1,14 @@
+# Разработка
+.idea/
+__pycache__/
+venv
+
+# Папки с файлами
+files
+result
+old
+
+# Конфиг
+config.py
+filter.py
+for_api.py
