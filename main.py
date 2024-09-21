@@ -7,7 +7,7 @@ from aiogram.filters.command import Command
 import requests
 
 import config
-
+from parser_mail import start
 
 # Объект бота
 bot = Bot(token=config.BOT_API_TOKEN)
@@ -37,19 +37,41 @@ def create_folder():
         os.makedirs(f"AllTO")
     if not os.path.exists(f"AllTO/list"):
         os.makedirs(f"AllTO/list")
+    if not os.path.exists(f"files_mail"):
+        os.makedirs(f"files_mail")
 
 create_folder()
 
-def main():
+def main(date):
     import parser_userside
-    # parser.get_html("13.09.2024")
-    parser_userside.get_html("14.09.2024")
-    parser_userside.get_html("15.09.2024")
-    parser_userside.get_html("16.09.2024")
-    parser_userside.get_html("17.09.2024")
-    parser_userside.get_html("18.09.2024")
-    parser_userside.get_html("19.09.2024")
-    parser_userside.get_html("20.09.2024")
+    # date = "17.09.2024"
+    et = []
+    et = parser_userside.get_html(date)
+    # et = parser_userside.get_html("14.09.2024")
+    # parser_userside.get_html("15.09.2024")
+    # parser_userside.get_html("16.09.2024")
+    # parser_userside.get_html("17.09.2024")
+    # parser_userside.get_html("18.09.2024")
+    # parser_userside.get_html("19.09.2024")
+    # parser_userside.get_html("20.09.2024")
+    import parser_mail
+    parser_mail.check_mail()
+
+    houm = []
+    houm = parser_mail.start(date)
+
+    print(f"et {et}")
+    print(f"houm {houm}")
+    lst_to_exel = et + houm
+    print(lst_to_exel)
+
+    import to_exel
+    to_exel.save_to_exel(lst_to_exel, date)
+    # to_exel.save_to_exel(lst_to_exel, date, "TONorth")
+    # to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
+    # to_exel.save_to_exel(lst_to_exel, date, "TOWest")
+    # to_exel.save_to_exel(lst_to_exel, date, "TOEast")
+
     # await dp.start_polling(bot)
     # start_parser()
     # while True:
@@ -58,6 +80,11 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("16.09.2024")
+    # main("17.09.2024")
+    # main("18.09.2024")
+    # main("19.09.2024")
+    # main("20.09.2024")
+    # main("21.09.2024")
     # asyncio.run(main())
     # parser.get_html("west")

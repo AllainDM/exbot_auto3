@@ -1,13 +1,15 @@
-from pprint import pprint
+from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 import lxml
 
+
 import json
 import config
 import address_filter
 import to_exel
+
 
 session = requests.Session()
 
@@ -85,27 +87,40 @@ def get_html(date):
         # print(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
         print(f"Количество карточек: {len(table)}")
+
+        # Доп поля: месяц(цифра) и метраж
+        mnth = datetime.now().month
+        print(f"mnth {mnth}")
+        metr = 50  # Данных в выгрузке нет, берем среднее.
+
+
         for i in table:
             amd = i.find_all('td', class_="")
             # TODO добавить обработку IndexError для отсутсвующих значений
 
             # print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
             # print(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
-            # print(amd[3].text)  # Номер договора. Для ЕТ без изменений.
-            print("############################")
+            # print(amd[3].text)  # Номер договора. Убрать пробелы и перенос строки(!).
+            # print("############################")
             address = address_filter.calc_address(amd[1].text)
-            print(f"address {address}")
+            # print(f"address {address}")
 
             # Выделим фамилию мастера
             soname = amd[2].text.split(" ")
             soname = soname[0]
 
-            one = [brand, date, amd[3].text, address[1], address[2], address[3], soname, address[0]]
+            # ЛС. Убрать пробелы и перенос строки(!).
+            ls = amd[3].text.split("\n")
+            ls = ls[0]
+
+            one = [brand, date, ls, address[1], address[2], address[3], soname, address[0], mnth, metr]
             answer.append(one)
             # break
+    # Вернем в основную функцию, для обьединения отчетов разных брендов.
+    return answer
     # Передадим для записи в файл
     # Аргументы: 1 - дата для сохранения файла. 2 - список заявок.
-    to_exel.save_to_exel(date, answer)
+    # to_exel.save_to_exel(date, answer)
 
     # except:
     #     print("Ошибка в целом блоке функции get_html")

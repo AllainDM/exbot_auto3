@@ -41,18 +41,13 @@ def calc_address(adrs):
     address_street = address[3].strip()
 
     if address_street in list_villages:
-        street = address[4][1:-4]
-        # street = address[4].strip()
-        # district = address[2].strip()
+        street = address[4]
         district = address[2][1:-4].strip()
     elif address_street in list_district:
-        street = address[4][1:-4]
-        # street = address[4].strip()
+        street = address[4]
         district = address[3].strip()
-        # district = address[3][1:-4].strip()
     else:
-        street = address[3][1:-4]
-        # street = address[3].strip()
+        street = address[3]
         district = address[2][1:-4].strip()
 
     # # Отдельно для Кудрово у ЕТ пропишем район как Кудрово
@@ -66,44 +61,6 @@ def calc_address(adrs):
         district = "Пушкин"
     elif district == "Ломон":
         district = "Ломоносов"
-
-    # # Разберем улицу, для определения поселков.
-
-    # if new_address[3] == " Парголово" or \
-    #         new_address[3] == " Шушары" or \
-    #         new_address[3] == " Новое Девяткино дер." or \
-    #         new_address[3] == " пос. Шушары" or \
-    #         new_address[3] == " Кудрово" or \
-    #         new_address[3] == " Мурино" or \
-    #         new_address[3] == " Бугры пос." or \
-    #         new_address[3] == " Репино" or \
-    #         new_address[3] == " Сестрорецк" or \
-    #         new_address[3] == " Янино-1" or \
-    #         new_address[3] == " Янин" or \
-    #         new_address[3] == " Пушкин" or \
-    #         new_address[3] == " Песочный" or \
-    #         new_address[3] == " Лисий" or \
-    #         new_address[3] == " Горелово" or \
-    #         new_address[3] == " Коммунар" or \
-    #         new_address[3] == " Колпино" or \
-    #         new_address[3] == " Горская" or \
-    #         new_address[3] == " Понтонный" or \
-    #         new_address[3] == " Тельмана" or \
-    #         new_address[3] == " Тельмана пос." or \
-    #         new_address[3] == " Стрельна" or \
-    #         new_address[3] == " пос. Стрельна" or \
-    #         new_address[3] == " Новогорелово" or \
-    #         new_address[3] == " Новогорелово " or \
-    #         new_address[3] == " Новогорелово пос.":
-    #     street = new_address[4][1:-4]
-    #     if new_address[4][-2] == 'ш':
-    #         street = new_address[4][1:-3]
-    # else:
-    #     # Обычно в конце строки "ул." или "б-р", тоесть 3 символа, но есть варианты с "ш."
-    #     street = new_address[3][1:-4]
-    #     if new_address[3][-2] == 'ш':
-    #         street = new_address[3][1:-3]
-
 
     # Дальше отфильтруем улицу на лишние слова общим фильтром
     # street = street.strip()
@@ -141,7 +98,7 @@ def calc_address(adrs):
     address_kv = address[-1].split()
     address_kv = address_kv[-1]
 
-    return [district, street, address_dom, address_kv]
+    return [district, street.strip(), address_dom, address_kv]
 
 
 # Убираем лишнее из улицы.
@@ -150,7 +107,10 @@ def cut_street(street):
     lists = ["остров", "коса", "наб.", "пр.", "ул.", "б-р", "пр-д", "ш."]
     # new_street = ""
     if split_address[-1] in lists:
-        new_street = split_address[0]
+        # В случае нахождения исключения берем все кроме последнего элемента.
+        new_street = split_address[0:-1]
+        new_street = " ".join(new_street)
+        # new_street = split_address[0]
     elif street == "Набережная Фонтанки":
         new_street = "Фонтанки"
     elif street == "Воронцовский бульвар":
