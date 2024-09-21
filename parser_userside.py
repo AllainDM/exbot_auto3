@@ -6,7 +6,8 @@ import lxml
 
 import json
 import config
-import address
+import address_filter
+import to_exel
 
 session = requests.Session()
 
@@ -77,6 +78,7 @@ def get_html(date):
     HEADERS["_csrf"] = csrf_token
     html = session_users.get(link, headers=HEADERS)
     answer = []
+    brand = "ЕТ"
     if html.status_code == 200:
         # print("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
@@ -87,11 +89,23 @@ def get_html(date):
             amd = i.find_all('td', class_="")
             # TODO добавить обработку IndexError для отсутсвующих значений
 
-            print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
-            print(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
-            print(amd[3].text)  # Номер договора. Для ЕТ без изменений.
+            # print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
+            # print(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
+            # print(amd[3].text)  # Номер договора. Для ЕТ без изменений.
             print("############################")
-            break
+            address = address_filter.calc_address(amd[1].text)
+            print(f"address {address}")
+
+            # Выделим фамилию мастера
+            soname = amd[2].text.split(" ")
+            soname = soname[0]
+
+            one = [brand, date, amd[3].text, address[1], address[2], address[3], soname, address[0]]
+            answer.append(one)
+            # break
+    # Передадим для записи в файл
+    # Аргументы: 1 - дата для сохранения файла. 2 - список заявок.
+    to_exel.save_to_exel(date, answer)
 
     # except:
     #     print("Ошибка в целом блоке функции get_html")

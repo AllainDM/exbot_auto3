@@ -1,0 +1,4 @@
+xlwt
+beautifulsoup4
+aiogram
+requests
