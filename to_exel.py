@@ -8,7 +8,7 @@ months = ["Январь", "Февраль", "Март", "Апрель", "Май"
           "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 
 
-def save_to_exel(table, date, to="no"):
+def save_to_exel(table, date, to="AllTO"):
     wb = xlwt.Workbook()
     ws = wb.add_sheet(f"Подключения")
     n = 2  # Стартовый номер строки для екселя
@@ -16,9 +16,39 @@ def save_to_exel(table, date, to="no"):
     for i in table:
         print(f"i {i}")
         # Проверим совпадение по районам для ТО.
-        # if to == "TONorth":
-        #     if i[7] in filter.district_north:
-        #         ...
+        if to == "TONorth":
+            if i[7] not in filter.district_north:
+                continue
+
+        elif to == "TOSouth":
+            if i[7] not in filter.district_south:
+                continue
+            if i[7] == "Московский":
+                if i[3] in filter.west_in_moscow:
+                    continue
+            if i[7] == "Кировский":
+                if i[3] in filter.west_in_kirov:
+                    continue
+            if i[7] == "Фрунзенский":
+                if i[3] in filter.west_in_frunze:
+                    continue
+
+        elif to == "TOWest":
+            if i[7] not in filter.district_west:
+                continue
+            if i[7] == "Московский":
+                if i[3] not in filter.west_in_moscow:
+                    continue
+            if i[7] == "Кировский":
+                if i[3] not in filter.west_in_kirov:
+                    continue
+            if i[7] == "Фрунзенский":
+                if i[3] not in filter.west_in_frunze:
+                    continue
+
+        elif to == "TOEast":
+            if i[7] not in filter.district_east:
+                continue
         try:
             ws.write(n, 0, i[0])  # Бренд
             ws.write(n, 1, i[1])  # Дата
@@ -38,4 +68,4 @@ def save_to_exel(table, date, to="no"):
 
         n += 1
 
-    wb.save(f'AllTO/{date}.xls')
+    wb.save(f'{to}/{to}_{date}.xls')

@@ -67,10 +67,10 @@ def main(date):
 
     import to_exel
     to_exel.save_to_exel(lst_to_exel, date)
-    # to_exel.save_to_exel(lst_to_exel, date, "TONorth")
-    # to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
-    # to_exel.save_to_exel(lst_to_exel, date, "TOWest")
-    # to_exel.save_to_exel(lst_to_exel, date, "TOEast")
+    to_exel.save_to_exel(lst_to_exel, date, "TONorth")
+    to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
+    to_exel.save_to_exel(lst_to_exel, date, "TOWest")
+    to_exel.save_to_exel(lst_to_exel, date, "TOEast")
 
     # await dp.start_polling(bot)
     # start_parser()
@@ -81,10 +81,10 @@ def main(date):
 
 if __name__ == "__main__":
     main("16.09.2024")
-    # main("17.09.2024")
-    # main("18.09.2024")
-    # main("19.09.2024")
-    # main("20.09.2024")
-    # main("21.09.2024")
+    main("17.09.2024")
+    main("18.09.2024")
+    main("19.09.2024")
+    main("20.09.2024")
+    main("21.09.2024")
     # asyncio.run(main())
     # parser.get_html("west")
