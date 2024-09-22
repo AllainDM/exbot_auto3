@@ -135,7 +135,7 @@ def start():
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
     import to_exel
-    to_exel.save_to_exel(lst_to_exel, date)
+    count_dict = to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
     to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
     to_exel.save_to_exel(lst_to_exel, date, "TOWest")
@@ -148,6 +148,12 @@ def start():
     send_telegram_file(f"TOWest/TOWest_{date}.xls")
     send_telegram_file(f"TOEast/TOEast_{date}.xls")
     send_telegram_file(f"AllTO/AllTO_{date}.xls")
+
+    count_dict_text = ""
+    for k, v in count_dict.items():
+        count_dict_text += f"{k}: {v} \n"
+
+    send_telegram(count_dict_text)
 
 
 def main():

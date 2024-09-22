@@ -1,11 +1,15 @@
-
 import xlwt
 
 import filter
+import count_list
 
 # Вместо использования сторонних библиотек возьем по простому из списка.
 months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
           "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
+
+# Составим словарь для записи домов для счетчика.
+count_dict = {i: 0 for i in count_list.count_lst}
+print(f"count_dict {count_dict}")
 
 
 def save_to_exel(table, date, to="AllTO"):
@@ -14,7 +18,7 @@ def save_to_exel(table, date, to="AllTO"):
     n = 2  # Стартовый номер строки для екселя
 
     for i in table:
-        print(f"i {i}")
+        # print(f"i {i}")
         # Проверим совпадение по районам для ТО.
         if to == "TONorth":
             if i[7] not in filter.district_north:
@@ -49,6 +53,14 @@ def save_to_exel(table, date, to="AllTO"):
         elif to == "TOEast":
             if i[7] not in filter.district_east:
                 continue
+
+        elif to == "AllTO":
+            srch = f"{i[3]} {i[4]}"
+            # print(f"srch {srch}")
+            if srch in count_list.count_lst:
+                count_dict[srch] += 1
+                print(f"Найдено совпадения для счетчика домов: {srch}")
+
         try:
             ws.write(n, 0, i[0])  # Бренд
             ws.write(n, 1, i[1])  # Дата
@@ -69,3 +81,7 @@ def save_to_exel(table, date, to="AllTO"):
         n += 1
 
     wb.save(f'{to}/{to}_{date}.xls')
+
+    if to == "AllTO":
+        print(count_dict)
+        return count_dict
