@@ -1,10 +1,12 @@
 import asyncio
 import time
 import os
+from datetime import datetime, timedelta
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 import requests
+import schedule
 
 import config
 from parser_mail import start
@@ -42,21 +44,87 @@ def create_folder():
 
 create_folder()
 
-def main(date):
+
+# Функция отправки сообщения в телеграмм
+def send_telegram(text_to_bot):
+    print(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
+    url_msg = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendMessage'
+    # Будем отправлять сообщение в чат
+    if config.send_to_chat:
+        data_to_chat = {
+            'chat_id': config.chat_id,
+            'text': text_to_bot,
+            'parse_mode': 'HTML'
+        }
+        requests.post(url=url_msg, data=data_to_chat)
+
+    # Будем отправлять сообщение в личку
+    if config.send_to_ls:
+        data_to_user = {
+            'chat_id': config.tg_user_id,
+            'text': text_to_bot,
+            'parse_mode': 'HTML'
+        }
+        requests.post(url=url_msg, data=data_to_user)
+
+
+# Функция отправки файла в телеграмм
+def send_telegram_file(file_name):
+    print(f"Функция отправки файла в телеграмм.")
+    url_file = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendDocument'
+
+    data_for_file = {
+        'chat_id': config.chat_id,
+        # 'caption': "Отчёт"
+    }
+    data_for_file_ls = {
+        'chat_id': config.tg_user_id,
+        # 'caption': "Отчёт"
+    }
+    # Отправка файла в общий чат
+    if config.send_to_chat:
+        with open(file_name, 'rb') as f:
+            files = {'document': f}
+            requests.post(url_file, data=data_for_file, files=files)
+            # requests.post(url_file, data=data_for_file_ls, files=files)
+
+    # # Отправка файла в личку
+    if config.send_to_ls:
+        with open(file_name, 'rb') as f:
+            files = {'document': f}
+            # requests.post(url_file, data=data_for_file, files=files)
+            requests.post(url_file, data=data_for_file_ls, files=files)
+
+
+def start():
+    """
+    Основная функция запускающая все парсеры /n
+    1. Получение даты. Настройки берем из конфига.
+    2. Парсер Юзера, одна ссылка на все ТО за день.
+    3. Парсер почты. Проверка почты на новое сообение
+    4. Парсер выгрузки с почты для ЭтХоума.
+    5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
+    6. Отправка файлов в чат/личку телеграмма.
+    """
+    # 1. Получение даты. Настройки берем из конфига.
+    # Дату запуска соберем тут.
+    # Получим дату и рассчитаем на -1 день(или как в конфиге), то есть за "вчера".
+    date_now = datetime.now()
+    start_day = date_now - timedelta(config.days_ago)  # здесь мы выставляем минус день
+    date = start_day.strftime("%d.%m.%Y")
+
+    # 2. Парсер Юзера, одна ссылка на все ТО за день.
     import parser_userside
-    # date = "17.09.2024"
     et = []
     et = parser_userside.get_html(date)
-    # et = parser_userside.get_html("14.09.2024")
-    # parser_userside.get_html("15.09.2024")
-    # parser_userside.get_html("16.09.2024")
-    # parser_userside.get_html("17.09.2024")
-    # parser_userside.get_html("18.09.2024")
-    # parser_userside.get_html("19.09.2024")
-    # parser_userside.get_html("20.09.2024")
+
+    # 3. Парсер почты. Проверка почты на новое сообение
     import parser_mail
     parser_mail.check_mail()
+    # Сделаем задержку для проверки и сохранения писем с почты.
+    time.sleep(config.delay_mail)
 
+    # 4. Парсер выгрузки с почты для ЭтХоума.
     houm = []
     houm = parser_mail.start(date)
 
@@ -65,6 +133,7 @@ def main(date):
     lst_to_exel = et + houm
     print(lst_to_exel)
 
+    # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
     import to_exel
     to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
@@ -72,19 +141,25 @@ def main(date):
     to_exel.save_to_exel(lst_to_exel, date, "TOWest")
     to_exel.save_to_exel(lst_to_exel, date, "TOEast")
 
-    # await dp.start_polling(bot)
-    # start_parser()
-    # while True:
-    #     time.sleep(config.delay)
-        # start_parser()
+    # 6. Отправка файлов в чат/личку телеграмма.
+    send_telegram(f"Отчет за {date}")
+    send_telegram_file(f"TONorth/TONorth_{date}.xls")
+    send_telegram_file(f"TOSouth/TOSouth_{date}.xls")
+    send_telegram_file(f"TOWest/TOWest_{date}.xls")
+    send_telegram_file(f"TOEast/TOEast_{date}.xls")
+    send_telegram_file(f"AllTO/AllTO_{date}.xls")
+
+
+def main():
+    # В случае теста сразу запустим создание отчета
+    if config.global_test_day:
+        start()
+    # Автоматический запуск парсера по таймеру.
+    # Время запуска берется из конфига(строка)
+    schedule.every().day.at(config.time_for_start_parser).do(start)
+    while True:
+        schedule.run_pending()
 
 
 if __name__ == "__main__":
-    main("16.09.2024")
-    main("17.09.2024")
-    main("18.09.2024")
-    main("19.09.2024")
-    main("20.09.2024")
-    main("21.09.2024")
-    # asyncio.run(main())
-    # parser.get_html("west")
+    main()

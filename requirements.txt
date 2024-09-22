@@ -3,3 +3,4 @@ beautifulsoup4
 aiogram
 requests
 xlrd3
+schedule
