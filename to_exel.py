@@ -3,7 +3,7 @@ import xlwt
 import filter
 import count_list
 
-# Вместо использования сторонних библиотек возьем по простому из списка.
+# Вместо использования сторонних библиотек просто возьем из списка.
 months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
           "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 
@@ -23,6 +23,9 @@ def save_to_exel(table, date, to="AllTO"):
         if to == "TONorth":
             if i[7] not in filter.district_north:
                 continue
+            if i[7] == "Красногвардейский":
+                if i[3] not in filter.north_in_redarmy:
+                    continue
 
         elif to == "TOSouth":
             if i[7] not in filter.district_south:
@@ -53,6 +56,9 @@ def save_to_exel(table, date, to="AllTO"):
         elif to == "TOEast":
             if i[7] not in filter.district_east:
                 continue
+            if i[7] == "Красногвардейский":
+                if i[3] in filter.north_in_redarmy:
+                    continue
 
         elif to == "AllTO":
             srch = f"{i[3]} {i[4]}"

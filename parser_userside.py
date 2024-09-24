@@ -5,10 +5,8 @@ from bs4 import BeautifulSoup
 import lxml
 
 
-import json
 import config
 import address_filter
-import to_exel
 
 
 session = requests.Session()
@@ -118,13 +116,6 @@ def get_html(date):
             # break
     # Вернем в основную функцию, для обьединения отчетов разных брендов.
     return answer
-    # Передадим для записи в файл
-    # Аргументы: 1 - дата для сохранения файла. 2 - список заявок.
-    # to_exel.save_to_exel(date, answer)
-
-    # except:
-    #     print("Ошибка в целом блоке функции get_html")
-    #     return False
 
 
 

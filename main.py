@@ -9,7 +9,6 @@ import requests
 import schedule
 
 import config
-from parser_mail import start
 
 # Объект бота
 bot = Bot(token=config.BOT_API_TOKEN)
@@ -47,6 +46,10 @@ create_folder()
 
 # Функция отправки сообщения в телеграмм
 def send_telegram(text_to_bot):
+    """
+    Функция отправки сообщений в телеграм.
+    Есть два варианта, отправка в чат и отправка в личку. Включается через конфиг.
+    """
     print(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
     url_msg = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendMessage'
     # Будем отправлять сообщение в чат
@@ -70,6 +73,10 @@ def send_telegram(text_to_bot):
 
 # Функция отправки файла в телеграмм
 def send_telegram_file(file_name):
+    """
+    Функция отправки файлов в телеграм.
+    Есть два варианта, отправка в чат и отправка в личку. Включается через конфиг.
+    """
     print(f"Функция отправки файла в телеграмм.")
     url_file = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendDocument'
 
@@ -105,6 +112,7 @@ def start():
     4. Парсер выгрузки с почты для ЭтХоума.
     5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
     6. Отправка файлов в чат/личку телеграмма.
+    7. Составление и отправка списка домов для учета количества подключений.
     """
     # 1. Получение даты. Настройки берем из конфига.
     # Дату запуска соберем тут.
@@ -149,6 +157,7 @@ def start():
     send_telegram_file(f"TOEast/TOEast_{date}.xls")
     send_telegram_file(f"AllTO/AllTO_{date}.xls")
 
+    # 7. Составление и отправка списка домов для учета количества подключений.
     count_dict_text = ""
     for k, v in count_dict.items():
         count_dict_text += f"{k}: {v} \n"
