@@ -10,7 +10,6 @@ import for_api
 import address_filter
 import filter
 
-
 # Настройка imaplib
 mail_pass = config.password
 username = config.address
@@ -24,6 +23,28 @@ imap.select('user')
 # r = imap.uid('search', "UNSEEN", "ALL")
 time.sleep(1)
 typ, data = imap.uid('search', "UNSEEN", "ALL")
+
+
+def start_module():
+    global imap
+    global typ
+    global data
+    # Настройка imaplib
+    # mail_pass = config.password
+    # username = config.address
+    # imap_server = "imap.mail.ru"
+    imap = imaplib.IMAP4_SSL(imap_server)
+    imap.login(username, mail_pass)
+
+    # imap.select("INBOX")
+    imap.select('user')
+    # p = imap.search(None, 'ALL')
+    # r = imap.uid('search', "UNSEEN", "ALL")
+    time.sleep(1)
+    typ, data = imap.uid('search', "UNSEEN", "ALL")
+    time.sleep(2)
+
+start_module()
 
 
 # Проверим почту и сохраним файлы в папку для дальнейшей обработки.

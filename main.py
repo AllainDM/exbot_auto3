@@ -9,6 +9,9 @@ import requests
 import schedule
 
 import config
+import parser_mail
+import to_exel
+import parser_userside
 
 # Объект бота
 bot = Bot(token=config.BOT_API_TOKEN)
@@ -122,12 +125,12 @@ def start():
     date = start_day.strftime("%d.%m.%Y")
 
     # 2. Парсер Юзера, одна ссылка на все ТО за день.
-    import parser_userside
+    parser_userside.get_token()  # Обновим токен
     et = []
     et = parser_userside.get_html(date)
 
     # 3. Парсер почты. Проверка почты на новое сообение
-    import parser_mail
+    parser_mail.start_module()  # Обновим настройки почты
     parser_mail.check_mail()
     # Сделаем задержку для проверки и сохранения писем с почты.
     time.sleep(config.delay_mail)
@@ -142,7 +145,6 @@ def start():
     print(lst_to_exel)
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
-    import to_exel
     count_dict = to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
     to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
