@@ -7,12 +7,12 @@ import count_list
 months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
           "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
 
-# Составим словарь для записи домов для счетчика.
-count_dict = {i: 0 for i in count_list.count_lst}
-print(f"count_dict {count_dict}")
-
 
 def save_to_exel(table, date, to="AllTO"):
+    # Составим словарь для записи домов для счетчика.
+    count_dict = {i: 0 for i in count_list.count_lst}
+    print(f"count_dict {count_dict}")
+
     wb = xlwt.Workbook()
     ws = wb.add_sheet(f"Подключения")
     n = 2  # Стартовый номер строки для екселя
