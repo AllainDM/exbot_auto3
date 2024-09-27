@@ -74,6 +74,24 @@ def send_telegram(text_to_bot):
         requests.post(url=url_msg, data=data_to_user)
 
 
+# Отдельная функция для отправки сообщений в личку.
+def send_telegram_to_ls(text_to_bot):
+    """
+    Функция отправки сообщений в телеграм.
+    Исключительно для отправки в личку.
+    """
+    print(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
+    url_msg = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendMessage'
+
+    # Будем отправлять сообщение в личку
+    data_to_user = {
+        'chat_id': config.tg_user_id,
+        'text': text_to_bot,
+        'parse_mode': 'HTML'
+    }
+    requests.post(url=url_msg, data=data_to_user)
+
+
 # Функция отправки файла в телеграмм
 def send_telegram_file(file_name):
     """
@@ -164,7 +182,8 @@ def start():
     for k, v in count_dict.items():
         count_dict_text += f"{k}: {v} \n"
 
-    send_telegram(count_dict_text)
+    send_telegram_to_ls(f"Счетчик домов за {date}")
+    send_telegram_to_ls(count_dict_text)
 
 
 def main():
