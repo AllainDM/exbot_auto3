@@ -26,6 +26,9 @@ def save_to_exel(table, date, to="AllTO"):
             if i[7] == "Красногвардейский":
                 if i[3] not in filter.north_in_redarmy:
                     continue
+            if i[7] == "Всеволожский":
+                if i[3] in filter.east_in_vsevol:
+                    continue
 
         elif to == "TOSouth":
             if i[7] not in filter.district_south:
@@ -58,6 +61,9 @@ def save_to_exel(table, date, to="AllTO"):
                 continue
             if i[7] == "Красногвардейский":
                 if i[3] in filter.north_in_redarmy:
+                    continue
+            if i[7] == "Всеволожский":
+                if i[3] not in filter.east_in_vsevol:
                     continue
 
         elif to == "AllTO":
