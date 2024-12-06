@@ -4,3 +4,4 @@ aiogram
 requests
 xlrd3
 schedule
+lxml

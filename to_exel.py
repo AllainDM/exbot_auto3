@@ -82,7 +82,7 @@ def save_to_exel(table, date, to="AllTO"):
             ws.write(n, 5, i[5])  # Квартира
             ws.write(n, 6, i[6])  # Мастер
             ws.write(n, 7, i[7])  # Район
-            ws.write(n, 11, months[i[8]-1])  # Месяц
+            # ws.write(n, 11, months[i[8]-1])  # Месяц
             try:
                 ws.write(n, 12, i[9])  # Метраж
             except IndexError:

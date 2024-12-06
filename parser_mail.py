@@ -123,12 +123,16 @@ def start(date):
                     # 7 Мастер
                     master = sheet.cell_value(row, 8)
                     # Фильтр фамилий мастеров подрядчиков.
-                    if master.lower() in filter.filter_master_no_to:
-                        continue
-                    else:
-                        master = master.split(" ")
-                        master = master[0]
-                        list_one.append(master)  # Возьмем только фамилию
+                    try:
+                        if master.lower() in filter.filter_master_no_to:
+                            continue
+                        else:
+                            master = master.split(" ")
+                            master = master[0]
+                            list_one.append(master)  # Возьмем только фамилию
+                    except AttributeError:
+                        # ...
+                        master = "Неизвестно"
 
                     # 8 Район
                     list_one.append(sheet.cell_value(row, 2))
