@@ -82,7 +82,7 @@ def get_html(date):
             f"tariff7_value2=2&tariff7_value=1088&filter_selector8=tariff&tariff8_value2=2&"
             f"tariff8_value=5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value=12676&"
             f"filter_group_by=")
-
+    print(link)
     # try:
     # Сразу подставим заголовок с токеном
     HEADERS["_csrf"] = csrf[1:-3]
@@ -104,6 +104,12 @@ def get_html(date):
 
         for i in table:
             amd = i.find_all('td', class_="")
+            print(f"amd[1] {amd[1]}")
+            print(f"amd[1].text {amd[1].text}")
+            # print(f"amd[2] {amd[2]}")
+            # print(f"amd[3] {amd[3]}")
+            # print(f"amd[4] {amd[4]}")
+            # print(f"amd[5] {amd[5]}")
             # TODO добавить обработку IndexError для отсутсвующих значений
 
             # print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
@@ -118,7 +124,7 @@ def get_html(date):
             soname = soname[0]
 
             # ЛС. Убрать пробелы и перенос строки(!).
-            ls = amd[3].text.split("\n")
+            ls = amd[0].text.split("\n")
             ls = ls[0]
 
             one = [brand, date, ls, address[1], address[2], address[3], soname, address[0], mnth, metr]

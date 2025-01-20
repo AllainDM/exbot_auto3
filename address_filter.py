@@ -1,3 +1,5 @@
+import re
+
 # Списки поселений и районов, для обработки исключений
 
 list_villages = ["Парголово", "Шушары", "Новое Девяткино дер.", "пос. Шушары",
@@ -95,8 +97,26 @@ def calc_address(adrs):
         address_dom = address_dom.replace("/", "к")
     else:
         address_dom = address_dom.replace("/", "")
-    address_kv = address[-1].split()
-    address_kv = address_kv[-1]
+
+    # Появилась подпись sms, она идет как -1
+    # Под -2 идет телефон впритык с квартирой, наподобие 562+79516572283
+    # address_kv = address_kv.split("+")
+    # address_kv = address_kv[0]
+
+    # Вариант через регулярки. Недоработан.
+    # address_str = " ".join(address)
+    # pattern_kv = r'кв\.?\s*(\d+)'
+    # address_kv = re.search(pattern_kv, address_str)
+
+    # address_kv = address[-1].split()
+    address_kv = address[-1].replace("+", " + ")
+    # print(f"address_kv1 {address_kv}")
+    address_kv = " ".join(address_kv.split())
+    # print(f"address_kv2 {address_kv}")
+    address_kv = address_kv.split(" ")
+    # print(f"address_kv3 {address_kv}")
+    address_kv = address_kv[-4]
+    # print(f"address_kv4 {address_kv}")
 
     return [district, street.strip(), address_dom, address_kv]
 
