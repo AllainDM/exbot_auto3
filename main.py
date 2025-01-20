@@ -163,7 +163,7 @@ def start():
     print(lst_to_exel)
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
-    count_dict = to_exel.save_to_exel(lst_to_exel, date)
+    # count_dict = to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
     to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
     to_exel.save_to_exel(lst_to_exel, date, "TOWest")
@@ -178,12 +178,13 @@ def start():
     send_telegram_file(f"AllTO/AllTO_{date}.xls")
 
     # 7. Составление и отправка списка домов для учета количества подключений.
-    count_dict_text = ""
-    for k, v in count_dict.items():
-        count_dict_text += f"{k}: {v} \n"
-
-    send_telegram_to_ls(f"Счетчик домов за {date}")
-    send_telegram_to_ls(count_dict_text)
+    # Больше не актуально.
+    # count_dict_text = ""
+    # for k, v in count_dict.items():
+    #     count_dict_text += f"{k}: {v} \n"
+    #
+    # send_telegram_to_ls(f"Счетчик домов за {date}")
+    # send_telegram_to_ls(count_dict_text)
 
 
 def main():

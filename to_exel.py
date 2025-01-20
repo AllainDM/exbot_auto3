@@ -10,8 +10,9 @@ months = ["Январь", "Февраль", "Март", "Апрель", "Май"
 
 def save_to_exel(table, date, to="AllTO"):
     # Составим словарь для записи домов для счетчика.
-    count_dict = {i: 0 for i in count_list.count_lst}
-    print(f"count_dict {count_dict}")
+    # Больше неактуально.
+    # count_dict = {i: 0 for i in count_list.count_lst}
+    # print(f"count_dict {count_dict}")
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(f"Подключения")
@@ -69,9 +70,9 @@ def save_to_exel(table, date, to="AllTO"):
         elif to == "AllTO":
             srch = f"{i[3]} {i[4]}"
             # print(f"srch {srch}")
-            if srch in count_list.count_lst:
-                count_dict[srch] += 1
-                print(f"Найдено совпадения для счетчика домов: {srch}")
+            # if srch in count_list.count_lst:
+            #     count_dict[srch] += 1
+            #     print(f"Найдено совпадения для счетчика домов: {srch}")
 
         try:
             ws.write(n, 0, i[0])  # Бренд
@@ -94,6 +95,6 @@ def save_to_exel(table, date, to="AllTO"):
 
     wb.save(f'{to}/{to}_{date}.xls')
 
-    if to == "AllTO":
-        print(count_dict)
-        return count_dict
+    # if to == "AllTO":
+    #     print(count_dict)
+    #     return count_dict

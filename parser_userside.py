@@ -104,17 +104,13 @@ def get_html(date):
 
         for i in table:
             amd = i.find_all('td', class_="")
-            print(f"amd[1] {amd[1]}")
-            print(f"amd[1].text {amd[1].text}")
-            # print(f"amd[2] {amd[2]}")
-            # print(f"amd[3] {amd[3]}")
-            # print(f"amd[4] {amd[4]}")
-            # print(f"amd[5] {amd[5]}")
+            # print(f"amd[1] {amd[1]}")
+            # print(f"amd[1].text {amd[1].text}")
             # TODO добавить обработку IndexError для отсутсвующих значений
 
             # print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
             # print(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
-            # print(amd[3].text)  # Номер договора. Убрать пробелы и перенос строки(!).
+            # print(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
             # print("############################")
             address = address_filter.calc_address(amd[1].text)
             # print(f"address {address}")
