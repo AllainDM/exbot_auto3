@@ -110,13 +110,18 @@ def calc_address(adrs):
 
     # address_kv = address[-1].split()
     address_kv = address[-1].replace("+", " + ")
-    # print(f"address_kv1 {address_kv}")
+    print(f"address_kv1 {address_kv}")
     address_kv = " ".join(address_kv.split())
-    # print(f"address_kv2 {address_kv}")
+    print(f"address_kv2 {address_kv}")
     address_kv = address_kv.split(" ")
-    # print(f"address_kv3 {address_kv}")
-    address_kv = address_kv[-4]
-    # print(f"address_kv4 {address_kv}")
+    print(f"address_kv3 {address_kv}")
+    try:
+        address_kv = address_kv[-4]
+        print(f"address_kv4 {address_kv}")
+    except IndexError:
+        address_kv = address_kv[-1]
+        print(f"address_kv5 {address_kv}")
+
 
     return [district, street.strip(), address_dom, address_kv]
 

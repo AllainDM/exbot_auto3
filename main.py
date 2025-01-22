@@ -164,6 +164,7 @@ def start():
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
     # count_dict = to_exel.save_to_exel(lst_to_exel, date)
+    to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
     to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
     to_exel.save_to_exel(lst_to_exel, date, "TOWest")
