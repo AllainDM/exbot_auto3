@@ -1,6 +1,6 @@
 xlwt
 beautifulsoup4
-aiogram
+aiogram~=3.15.0
 requests
 xlrd3
 schedule

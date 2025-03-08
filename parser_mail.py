@@ -55,6 +55,7 @@ def check_mail():
         res, msg = imap.uid('fetch', num, '(RFC822)')
         mail = email.message_from_bytes(msg[0][1])
 
+        # Является ли письмо многокомпонентным (multipart)
         if mail.is_multipart():
             time.sleep(1)
             for part in mail.walk():
@@ -66,7 +67,7 @@ def check_mail():
                     print(filename)
                     print(type(filename))
                     # list_filenames.append(filename)
-                    # Создадим папку для месяца если ее не сущеуствует.
+                    # Создадим папку для месяца если ее не существует.
                     if not os.path.exists(f"files_mail/{filename[:7]}"):
                         os.makedirs(f"files_mail/{filename[:7]}")
                     with open(f'files_mail/{filename[:7]}/{filename[:-5]}{n}.xlsx', 'wb') as new_file:

@@ -9,7 +9,7 @@ import config
 import address_filter
 
 
-session = requests.Session()
+# session = requests.Session()
 
 url_login_get = "https://us.gblnet.net/"
 url_login = "https://us.gblnet.net/body/login"
@@ -26,49 +26,82 @@ data_users = {
 }
 # Создание сессии, получение токена и авторизация
 
-session_users = requests.Session()
+# session_users = requests.Session()
+#
+# req = session_users.get(url_login_get)
+#
+# csrf = None
+#
+# def get_token():
+#     global csrf
+#     soup = BeautifulSoup(req.content, 'html.parser')
+#     # print(soup)
+#     print("###################")
+#     scripts = soup.find_all('script')
+#
+#     for script in scripts:
+#         if script.string is not None:
+#             # print(script.string)
+#             script_lst = script.string.split(" ")
+#             # print(script_lst)
+#             for num, val in enumerate(script_lst):
+#                 if val == "_csrf:":
+#                     csrf = script_lst[num+1]
+#     print(f"csrf {csrf}")
+#
+# get_token()
+#
+#
+# def create_users_sessions():
+#     while True:
+#         try:
+#             data_users["_csrf"] = csrf[1:-3]
+#             # print(f"data_users {data_users}")
+#             response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
+#             # print("Сессия Юзера создана 2")
+#             # print(f"response_users2 {response_users2}")
+#             return response_users2
+#         except ConnectionError:
+#             print("Ошибка создания сессии")
+#             # TODO функция отправки тут отсутствует
+#             # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
+#             # time.sleep(300)
+#
+#
+# response_users = create_users_sessions()
 
-req = session_users.get(url_login_get)
-
-csrf = None
-
-def get_token():
-    global csrf
+# Новый способ получения токена и авторизации.
+def get_token(session_users):
+    req = session_users.get(url_login_get)
     soup = BeautifulSoup(req.content, 'html.parser')
     # print(soup)
-    print("###################")
+    # print("###################")
     scripts = soup.find_all('script')
 
+    csrf = None
     for script in scripts:
         if script.string is not None:
-            # print(script.string)
             script_lst = script.string.split(" ")
-            # print(script_lst)
             for num, val in enumerate(script_lst):
                 if val == "_csrf:":
                     csrf = script_lst[num+1]
+                    break
+        if csrf:
+            break
     print(f"csrf {csrf}")
-
-get_token()
-
+    return csrf[1:-3] if csrf else None
 
 def create_users_sessions():
-    while True:
-        try:
-            data_users["_csrf"] = csrf[1:-3]
-            # print(f"data_users {data_users}")
-            response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
-            # print("Сессия Юзера создана 2")
-            # print(f"response_users2 {response_users2}")
-            return response_users2
-        except ConnectionError:
-            print("Ошибка создания сессии")
-            # TODO функция отправки тут отсутствует
-            # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
-            # time.sleep(300)
+    session_users = requests.Session()
+    csrf = get_token(session_users)
+    if not csrf:
+        raise Exception("CSRF token not found")
 
-
-response_users = create_users_sessions()
+    data_users["_csrf"] = csrf
+    response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS)
+    if response_users2.status_code != 200:
+        raise Exception("Failed to create user session")
+    return session_users
 
 
 def get_html(date):
@@ -83,9 +116,17 @@ def get_html(date):
             f"tariff8_value=5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value=12676&"
             f"filter_group_by=")
     print(link)
+
+    # Новый способ получения токена и авторизации.
+    session_users = create_users_sessions()
+
     # try:
     # Сразу подставим заголовок с токеном
-    HEADERS["_csrf"] = csrf[1:-3]
+    # HEADERS["_csrf"] = csrf[1:-3]
+
+    # Новый способ получения токена и авторизации.
+    HEADERS["_csrf"] = data_users["_csrf"]
+
     html = session_users.get(link, headers=HEADERS)
     answer = []
     brand = "ЕТ"
