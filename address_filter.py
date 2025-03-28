@@ -123,8 +123,11 @@ def calc_address(adrs):
     #     address_kv = address_kv[-1]
     #     print(f"address_kv5 {address_kv}")
     # Теперь считаем от начала
-    address_kv = address_kv[2]
-    print(f"address_kv4 {address_kv}")
+    try:
+        address_kv = address_kv[2]
+        print(f"address_kv4 {address_kv}")
+    except IndexError:
+        address_kv = 0
 
 
     return [district, street.strip(), address_dom, address_kv]

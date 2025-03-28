@@ -143,7 +143,7 @@ def start():
     date = start_day.strftime("%d.%m.%Y")
 
     # 2. Парсер Юзера, одна ссылка на все ТО за день.
-    parser_userside.get_token()  # Обновим токен
+    # parser_userside.get_token()  # Обновим токен
     et = []
     et = parser_userside.get_html(date)
 
