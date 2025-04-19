@@ -8,6 +8,18 @@ import lxml
 import config
 import address_filter
 
+import logging
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+logging.debug("Это отладочное сообщение")
+logging.info("Это информационное сообщение")
+logging.warning("Это предупреждение")
+logging.error("Это ошибка")
+logging.critical("Это критическая ошибка")
+
+logger = logging.getLogger(__name__)
+
 
 # session = requests.Session()
 
@@ -35,19 +47,19 @@ data_users = {
 # def get_token():
 #     global csrf
 #     soup = BeautifulSoup(req.content, 'html.parser')
-#     # print(soup)
-#     print("###################")
+#     # logger.debug(soup)
+#     logger.debug("###################")
 #     scripts = soup.find_all('script')
 #
 #     for script in scripts:
 #         if script.string is not None:
-#             # print(script.string)
+#             # logger.debug(script.string)
 #             script_lst = script.string.split(" ")
-#             # print(script_lst)
+#             # logger.debug(script_lst)
 #             for num, val in enumerate(script_lst):
 #                 if val == "_csrf:":
 #                     csrf = script_lst[num+1]
-#     print(f"csrf {csrf}")
+#     logger.debug(f"csrf {csrf}")
 #
 # get_token()
 #
@@ -56,13 +68,13 @@ data_users = {
 #     while True:
 #         try:
 #             data_users["_csrf"] = csrf[1:-3]
-#             # print(f"data_users {data_users}")
+#             # logger.debug(f"data_users {data_users}")
 #             response_users2 = session_users.post(url_login, data=data_users, headers=HEADERS).text
-#             # print("Сессия Юзера создана 2")
-#             # print(f"response_users2 {response_users2}")
+#             # logger.debug("Сессия Юзера создана 2")
+#             # logger.debug(f"response_users2 {response_users2}")
 #             return response_users2
 #         except ConnectionError:
-#             print("Ошибка создания сессии")
+#             logger.debug("Ошибка создания сессии")
 #             # TODO функция отправки тут отсутствует
 #             # send_telegram("Ошибка создания сессии UserSide, повтор запроса через 5 минут")
 #             # time.sleep(300)
@@ -74,8 +86,8 @@ data_users = {
 def get_token(session_users):
     req = session_users.get(url_login_get)
     soup = BeautifulSoup(req.content, 'html.parser')
-    # print(soup)
-    # print("###################")
+    # logger.debug(soup)
+    # logger.debug("###################")
     scripts = soup.find_all('script')
 
     csrf = None
@@ -88,7 +100,7 @@ def get_token(session_users):
                     break
         if csrf:
             break
-    print(f"csrf {csrf}")
+    logger.debug(f"csrf {csrf}")
     return csrf[1:-3] if csrf else None
 
 def create_users_sessions():
@@ -115,7 +127,7 @@ def get_html(date):
             f"tariff7_value2=2&tariff7_value=1088&filter_selector8=tariff&tariff8_value2=2&"
             f"tariff8_value=5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value=12676&"
             f"filter_group_by=")
-    print(link)
+    logger.debug(link)
 
     # Новый способ получения токена и авторизации.
     session_users = create_users_sessions()
@@ -131,30 +143,30 @@ def get_html(date):
     answer = []
     brand = "ЕТ"
     if html.status_code == 200:
-        # print("Код ответа 200")
+        # logger.debug("Код ответа 200")
         soup = BeautifulSoup(html.text, 'lxml')
-        # print(f"soup {soup}")
+        # logger.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        print(f"Количество карточек: {len(table)}")
+        logger.debug(f"Количество карточек: {len(table)}")
 
         # Доп поля: месяц(цифра) и метраж
         mnth = datetime.now().month
-        print(f"mnth {mnth}")
+        logger.debug(f"mnth {mnth}")
         metr = 50  # Данных в выгрузке нет, берем среднее.
 
 
         for i in table:
             amd = i.find_all('td', class_="")
-            # print(f"amd[1] {amd[1]}")
-            # print(f"amd[1].text {amd[1].text}")
+            # logger.debug(f"amd[1] {amd[1]}")
+            # logger.debug(f"amd[1].text {amd[1].text}")
             # TODO добавить обработку IndexError для отсутсвующих значений
 
-            # print(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
-            # print(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
-            # print(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
-            # print("############################")
+            # logger.debug(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
+            # logger.debug(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
+            # logger.debug(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
+            # logger.debug("############################")
             address = address_filter.calc_address(amd[1].text)
-            # print(f"address {address}")
+            # logger.debug(f"address {address}")
 
             # Выделим фамилию мастера
             soname = amd[2].text.split(" ")

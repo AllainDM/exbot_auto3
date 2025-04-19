@@ -1,17 +1,30 @@
-import asyncio
-import time
+
 import os
+import time
+import asyncio
+import logging
 from datetime import datetime, timedelta
 
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters.command import Command
 import requests
 import schedule
+from aiogram import Bot, Dispatcher, types
+from aiogram.filters.command import Command
 
 import config
-import parser_mail
 import to_exel
+import parser_mail
 import parser_userside
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+logging.debug("Это отладочное сообщение")
+logging.info("Это информационное сообщение")
+logging.warning("Это предупреждение")
+logging.error("Это ошибка")
+logging.critical("Это критическая ошибка")
+
+logger = logging.getLogger(__name__)
 
 # Объект бота
 bot = Bot(token=config.BOT_API_TOKEN)
@@ -53,7 +66,7 @@ def send_telegram(text_to_bot):
     Функция отправки сообщений в телеграм.
     Есть два варианта, отправка в чат и отправка в личку. Включается через конфиг.
     """
-    print(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
+    logger.debug(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
     url_msg = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendMessage'
     # Будем отправлять сообщение в чат
     if config.send_to_chat:
@@ -80,7 +93,7 @@ def send_telegram_to_ls(text_to_bot):
     Функция отправки сообщений в телеграм.
     Исключительно для отправки в личку.
     """
-    print(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
+    logger.debug(f"Функция отправки сообщения в телеграмм. {text_to_bot}")
     url_msg = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendMessage'
 
     # Будем отправлять сообщение в личку
@@ -98,7 +111,7 @@ def send_telegram_file(file_name):
     Функция отправки файлов в телеграм.
     Есть два варианта, отправка в чат и отправка в личку. Включается через конфиг.
     """
-    print(f"Функция отправки файла в телеграмм.")
+    logger.debug(f"Функция отправки файла в телеграмм.")
     url_file = f'https://api.telegram.org/bot{config.BOT_API_TOKEN}/sendDocument'
 
     data_for_file = {
@@ -157,10 +170,10 @@ def start():
     houm = []
     houm = parser_mail.start(date)
 
-    print(f"et {et}")
-    print(f"houm {houm}")
+    logger.debug(f"et {et}")
+    logger.debug(f"houm {houm}")
     lst_to_exel = et + houm
-    print(lst_to_exel)
+    logger.debug(lst_to_exel)
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
     count_dict = to_exel.save_to_exel(lst_to_exel, date)
@@ -196,9 +209,12 @@ def main():
         start()
     # Автоматический запуск парсера по таймеру.
     # Время запуска берется из конфига(строка)
-    schedule.every().day.at(config.time_for_start_parser).do(start)
+    # schedule.every().day.at(config.time_for_start_parser).do(start)
     while True:
+        logging.info("Ожидаем работы расписания.")
         schedule.run_pending()
+        time.sleep(60)
+
 
 
 if __name__ == "__main__":

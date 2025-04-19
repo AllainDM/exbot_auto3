@@ -3,6 +3,18 @@ import xlwt
 import filter
 import count_list
 
+import logging
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+logging.debug("Это отладочное сообщение")
+logging.info("Это информационное сообщение")
+logging.warning("Это предупреждение")
+logging.error("Это ошибка")
+logging.critical("Это критическая ошибка")
+
+logger = logging.getLogger(__name__)
+
 # Вместо использования сторонних библиотек просто возьем из списка.
 months = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
           "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"]
@@ -12,14 +24,14 @@ def save_to_exel(table, date, to="AllTO"):
     # Составим словарь для записи домов для счетчика.
     # Больше неактуально. == Запускаю по просьбе Игоря
     count_dict = {i: 0 for i in count_list.count_lst}
-    print(f"count_dict {count_dict}")
+    logger.debug(f"count_dict {count_dict}")
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(f"Подключения")
     n = 2  # Стартовый номер строки для екселя
 
     for i in table:
-        # print(f"i {i}")
+        # logger.debug(f"i {i}")
         # Проверим совпадение по районам для ТО.
         if to == "TONorth":
             if i[7] not in filter.district_north:
@@ -69,10 +81,10 @@ def save_to_exel(table, date, to="AllTO"):
 
         elif to == "AllTO":
             srch = f"{i[3]} {i[4]}"
-            print(f"srch {srch}")
+            logger.debug(f"srch {srch}")
             if srch in count_list.count_lst:
                 count_dict[srch] += 1
-                print(f"Найдено совпадения для счетчика домов: {srch}")
+                logger.debug(f"Найдено совпадения для счетчика домов: {srch}")
 
         try:
             ws.write(n, 0, i[0])  # Бренд
@@ -96,5 +108,5 @@ def save_to_exel(table, date, to="AllTO"):
     wb.save(f'{to}/{to}_{date}.xls')
 
     if to == "AllTO":
-        print(count_dict)
+        logger.debug(count_dict)
         return count_dict

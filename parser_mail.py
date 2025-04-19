@@ -10,6 +10,18 @@ import for_api
 import address_filter
 import filter
 
+import logging
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+
+logging.debug("Это отладочное сообщение")
+logging.info("Это информационное сообщение")
+logging.warning("Это предупреждение")
+logging.error("Это ошибка")
+logging.critical("Это критическая ошибка")
+
+logger = logging.getLogger(__name__)
+
 # Настройка imaplib
 mail_pass = config.password
 username = config.address
@@ -64,8 +76,8 @@ def check_mail():
                 # Найдем файлы с названием(строка)
                 # if type(filename) == str and filename[16] == 'c':  # Первый вариант для userside
                 if type(filename) == str:
-                    print(filename)
-                    print(type(filename))
+                    logger.debug(filename)
+                    logger.debug(type(filename))
                     # list_filenames.append(filename)
                     # Создадим папку для месяца если ее не существует.
                     if not os.path.exists(f"files_mail/{filename[:7]}"):
@@ -76,19 +88,19 @@ def check_mail():
 
 def start(date):
     # Преобразуем дату формата "14.09.2024" к названию папки формата "2024-09"
-    print(date)
+    logger.debug(date)
     date_lst = date.split(".")
-    print(date_lst)
+    logger.debug(date_lst)
     year_month = f"{date_lst[2]}-{date_lst[1]}"
-    print(year_month)
+    logger.debug(year_month)
     # И для формата с днем, для поиска файла.
     year_month_day = f"{date_lst[2]}-{date_lst[1]}-{date_lst[0]}"
     answer = []
 
     if os.path.exists(f'files_mail/{year_month}'):
         files = os.listdir(f'files_mail/{year_month}')
-        print(f"Папка найдена: {year_month}")
-        print(f"files {files}")
+        logger.debug(f"Папка найдена: {year_month}")
+        logger.debug(f"files {files}")
         # Переберем весь список файлов для нахождения совпадения в названии.
         for i in files:
             if i[:16] == f"{year_month_day}-new_c":
@@ -146,8 +158,8 @@ def start(date):
                     except ValueError: list_one.append(0)
 
                     answer.append(list_one)
-                print(f"answer {answer}")
+                logger.debug(f"answer {answer}")
                 return answer
-    print(f"Папка НЕ найдена: {year_month}")
+    logger.debug(f"Папка НЕ найдена: {year_month}")
     return answer
 
