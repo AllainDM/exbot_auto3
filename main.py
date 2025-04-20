@@ -213,7 +213,7 @@ def main():
     while True:
         logging.info("Ожидаем работы расписания.")
         schedule.run_pending()
-        time.sleep(60)
+        time.sleep(config.main_sleep)
 
 
 
