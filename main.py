@@ -26,6 +26,10 @@ logging.critical("Это критическая ошибка")
 
 logger = logging.getLogger(__name__)
 
+# Устанавливаем уровень логирования из конфига
+log_level = getattr(logging, config.main_logger.upper(), logging.INFO)
+logger.setLevel(log_level)
+
 # Объект бота
 bot = Bot(token=config.BOT_API_TOKEN)
 # Диспетчер
@@ -211,7 +215,7 @@ def main():
     # Время запуска берется из конфига(строка)
     # schedule.every().day.at(config.time_for_start_parser).do(start)
     while True:
-        logging.info("Ожидаем работы расписания.")
+        logger.debug("Ожидаем работы расписания.")
         schedule.run_pending()
         time.sleep(config.main_sleep)
 
