@@ -141,7 +141,7 @@ def send_telegram_file(file_name):
             requests.post(url_file, data=data_for_file_ls, files=files)
 
 
-def start():
+async def start():
     """
     Основная функция запускающая все парсеры /n
     1. Получение даты. Настройки берем из конфига.
@@ -207,19 +207,23 @@ def start():
     send_telegram(count_dict_text)
 
 
-def main():
+async def main():
     # В случае теста сразу запустим создание отчета
     if config.global_test_day:
         start()
     # Автоматический запуск парсера по таймеру.
     # Время запуска берется из конфига(строка)
-    # schedule.every().day.at(config.time_for_start_parser).do(start)
-    while True:
-        logger.debug("Ожидаем работы расписания.")
-        schedule.run_pending()
-        time.sleep(config.main_sleep)
+    #
+        schedule.every().day.at(config.time_for_start_parser).do(
+        lambda: asyncio.create_task(start())
+
+  #schedule.every().day.at(config.time_for_start_parser).do(start)
+    # while True:
+        # logger.debug("Ожидаем работы расписания.")
+       # schedule.run_pending()
+       # time.sleep(config.main_sleep)
 
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
