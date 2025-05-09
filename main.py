@@ -206,16 +206,29 @@ async def start():
     # send_telegram_to_ls(count_dict_text)
     send_telegram(count_dict_text)
 
+# Запуск расписания
+async def run_scheduler():
+    while True:
+        schedule.run_pending()
+        logger.info('Ожидание расписания')
+        await asyncio.sleep(10)
 
 async def main():
     # В случае теста сразу запустим создание отчета
     if config.global_test_day:
-        start()
+        await start()
     # Автоматический запуск парсера по таймеру.
     # Время запуска берется из конфига(строка)
     #
         schedule.every().day.at(config.time_for_start_parser).do(
-        lambda: asyncio.create_task(start())
+            lambda: asyncio.create_task(start()))
+
+    # Запуск шедулера в фоновом режиме
+    asyncio.create_task(run_scheduler())
+
+    # Запускаем поллинг
+    logger.info("Бот запущен")
+    await dp.start_polling(bot)
 
   #schedule.every().day.at(config.time_for_start_parser).do(start)
     # while True:
