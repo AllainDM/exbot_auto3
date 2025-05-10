@@ -206,6 +206,11 @@ async def start():
     # send_telegram_to_ls(count_dict_text)
     send_telegram(count_dict_text)
 
+# Функция для запуска по таймеру
+async def start_scheduled_morning():
+    schedule.every().day.at(config.time_for_start_parser).do(
+        lambda: asyncio.create_task(start()))
+
 # Запуск расписания
 async def run_scheduler():
     while True:
@@ -220,8 +225,14 @@ async def main():
     # Автоматический запуск парсера по таймеру.
     # Время запуска берется из конфига(строка)
     #
-        schedule.every().day.at(config.time_for_start_parser).do(
-            lambda: asyncio.create_task(start()))
+    # schedule.every().day.at(config.time_for_start_parser).do(
+    #     lambda: asyncio.create_task(start()))
+
+    # Удаляем вебхук, если он был установлен
+    await bot.delete_webhook(drop_pending_updates=True)
+
+    # Запуск утреннего расписания
+    await start_scheduled_morning()
 
     # Запуск шедулера в фоновом режиме
     asyncio.create_task(run_scheduler())
