@@ -161,6 +161,8 @@ def get_html(date):
             # logger.debug(f"amd[1].text {amd[1].text}")
             # TODO добавить обработку IndexError для отсутсвующих значений
             try:
+                logger.info(f"amd[1] {amd[1]}")
+                logger.info(f"amd[1].text {amd[1].text}")
                 # logger.debug(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
                 # logger.debug(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
                 # logger.debug(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
