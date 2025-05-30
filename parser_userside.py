@@ -157,7 +157,7 @@ def get_html(date):
 
         for i in table:
             amd = i.find_all('td', class_="")
-            logger.debug(f"amd {amd}")
+            logger.info(f"amd {amd}")
             # logger.debug(f"amd[1].text {amd[1].text}")
             # TODO добавить обработку IndexError для отсутсвующих значений
             try:
