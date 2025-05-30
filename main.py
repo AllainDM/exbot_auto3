@@ -206,6 +206,8 @@ async def start():
     # send_telegram_to_ls(count_dict_text)
     send_telegram(count_dict_text)
 
+
+
 # Функция для запуска по таймеру
 async def start_scheduled_morning():
     schedule.every().day.at(config.time_for_start_parser).do(

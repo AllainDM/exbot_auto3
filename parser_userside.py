@@ -127,7 +127,7 @@ def get_html(date):
             f"tariff7_value2=2&tariff7_value=1088&filter_selector8=tariff&tariff8_value2=2&"
             f"tariff8_value=5788&filter_selector9=tariff&tariff9_value2=2&tariff9_value=12676&"
             f"filter_group_by=")
-    logger.debug(link)
+    logger.info(link)
 
     # Новый способ получения токена и авторизации.
     session_users = create_users_sessions()
@@ -160,24 +160,27 @@ def get_html(date):
             # logger.debug(f"amd[1] {amd[1]}")
             # logger.debug(f"amd[1].text {amd[1].text}")
             # TODO добавить обработку IndexError для отсутсвующих значений
+            try:
+                # logger.debug(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
+                # logger.debug(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
+                # logger.debug(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
+                # logger.debug("############################")
+                address = address_filter.calc_address(amd[1].text)
+                # logger.debug(f"address {address}")
 
-            # logger.debug(amd[1].text)  # Адрес. Необходимо пропустить через модуль редактирования.
-            # logger.debug(amd[2].text)  # Мастер. Необходимо оставить только фамилию.
-            # logger.debug(amd[0].text)  # Номер договора. Убрать пробелы и перенос строки(!).
-            # logger.debug("############################")
-            address = address_filter.calc_address(amd[1].text)
-            # logger.debug(f"address {address}")
+                # Выделим фамилию мастера
+                soname = amd[2].text.split(" ")
+                soname = soname[0]
 
-            # Выделим фамилию мастера
-            soname = amd[2].text.split(" ")
-            soname = soname[0]
+                # ЛС. Убрать пробелы и перенос строки(!).
+                ls = amd[0].text.split("\n")
+                ls = ls[0]
 
-            # ЛС. Убрать пробелы и перенос строки(!).
-            ls = amd[0].text.split("\n")
-            ls = ls[0]
-
-            one = [brand, date, ls, address[1], address[2], address[3], soname, address[0], mnth, metr]
-            answer.append(one)
+                one = [brand, date, ls, address[1], address[2], address[3], soname, address[0], mnth, metr]
+                answer.append(one)
+            except IndexError:
+                one = [brand, date, "я", "хз", "что", "тут", "за", "адрес", mnth, metr]
+                answer.append(one)
             # break
     # Вернем в основную функцию, для обьединения отчетов разных брендов.
     return answer
