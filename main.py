@@ -162,7 +162,7 @@ async def start():
     # 2. Парсер Юзера, одна ссылка на все ТО за день.
     # parser_userside.get_token()  # Обновим токен
     et = []
-    et = parser_userside.get_html(date)
+    # et = parser_userside.get_html(date)
 
     # 3. Парсер почты. Проверка почты на новое сообщение
     parser_mail.start_module()  # Обновим настройки почты
@@ -180,7 +180,7 @@ async def start():
     logger.debug(lst_to_exel)
 
     # 5. Отправка в ексель для сохранения по ТО + общий файл для поиска потеряшек.
-    count_dict = to_exel.save_to_exel(lst_to_exel, date)
+    count_dict_1, count_dict_2 = to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date)
     to_exel.save_to_exel(lst_to_exel, date, "TONorth")
     to_exel.save_to_exel(lst_to_exel, date, "TOSouth")
@@ -197,14 +197,23 @@ async def start():
 
     # 7. Составление и отправка списка домов для учета количества подключений.
     # Больше не актуально. == Запускаю по просьбе Игоря
-    count_dict_text = ""
-    for k, v in count_dict.items():
-        count_dict_text += f"{k}: {v} \n"
-
-    # send_telegram_to_ls(f"Счетчик домов за {date}")
+    # Сделал два списка.
+    # TODO переделать под любое количество списков, принимая массив с массивами
     send_telegram(f"Счетчик домов за {date}")
+
+    count_dict_text_1 = ""
+    for k, v in count_dict_1.items():
+        count_dict_text_1 += f"{k}: {v} \n"
+    # send_telegram_to_ls(f"Счетчик домов за {date}")
     # send_telegram_to_ls(count_dict_text)
-    send_telegram(count_dict_text)
+    send_telegram(count_dict_text_1)
+
+    count_dict_text_2 = ""
+    for k, v in count_dict_2.items():
+        count_dict_text_2 += f"{k}: {v} \n"
+    # send_telegram_to_ls(f"Счетчик домов за {date}")
+    # send_telegram_to_ls(count_dict_text)
+    send_telegram(count_dict_text_2)
 
 
 

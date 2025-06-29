@@ -23,8 +23,10 @@ months = ["Январь", "Февраль", "Март", "Апрель", "Май"
 def save_to_exel(table, date, to="AllTO"):
     # Составим словарь для записи домов для счетчика.
     # Больше неактуально. == Запускаю по просьбе Игоря
-    count_dict = {i: 0 for i in count_list.count_lst}
-    logger.debug(f"count_dict {count_dict}")
+    count_dict_1 = {i: 0 for i in count_list.count_lst_1}
+    count_dict_2 = {i: 0 for i in count_list.count_lst_2}
+    logger.debug(f"count_dict_1 {count_dict_1}")
+    logger.debug(f"count_dict_2 {count_dict_2}")
 
     wb = xlwt.Workbook()
     ws = wb.add_sheet(f"Подключения")
@@ -82,8 +84,11 @@ def save_to_exel(table, date, to="AllTO"):
         elif to == "AllTO":
             srch = f"{i[3]} {i[4]}"
             logger.debug(f"srch {srch}")
-            if srch in count_list.count_lst:
-                count_dict[srch] += 1
+            if srch in count_list.count_lst_1:
+                count_dict_1[srch] += 1
+                logger.debug(f"Найдено совпадения для счетчика домов: {srch}")
+            if srch in count_list.count_lst_2:
+                count_dict_2[srch] += 1
                 logger.debug(f"Найдено совпадения для счетчика домов: {srch}")
 
         try:
@@ -108,5 +113,5 @@ def save_to_exel(table, date, to="AllTO"):
     wb.save(f'{to}/{to}_{date}.xls')
 
     if to == "AllTO":
-        logger.debug(count_dict)
-        return count_dict
+        # logger.debug(count_dict)
+        return count_dict_1, count_dict_2

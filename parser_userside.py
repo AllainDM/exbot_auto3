@@ -147,7 +147,8 @@ def get_html(date):
         soup = BeautifulSoup(html.text, 'lxml')
         # logger.debug(f"soup {soup}")
         table = soup.find_all('tr', class_="cursor_pointer")
-        logger.debug(f"Количество карточек: {len(table)}")
+        logger.info(f"Количество карточек: {len(table)}")
+        logger.info(f"table: {table}")
 
         # Доп поля: месяц(цифра) и метраж
         mnth = datetime.now().month
